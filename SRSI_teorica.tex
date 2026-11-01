@@ -1,0 +1,479 @@
+\documentclass[11pt,a4paper]{article}
+
+\usepackage{graphicx}
+\usepackage{xcolor}
+\usepackage{geometry}
+\geometry{a4paper, top=2.5cm, bottom=2.5cm, left=2.5cm, right=2.5cm}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage[T1]{fontenc}
+\usepackage{lmodern}
+\usepackage[portuguese]{babel}
+\addto\captionsportuguese{\renewcommand*{\contentsname}{Índice}}
+\usepackage{microtype}
+\usepackage{booktabs}
+\usepackage{tabularx}
+\usepackage{float}
+\usepackage{array}
+\usepackage{enumitem}
+\usepackage{caption}
+\usepackage{multicol}
+\usepackage[numbers,sort&compress]{natbib}
+\usepackage{braket}
+\usepackage{float}
+\usepackage{xurl}
+
+\usepackage[
+    colorlinks=true,
+    linkcolor=black,
+    citecolor=blue!50!black,
+    urlcolor=blue!50!black,
+    bookmarks=true,
+    bookmarksnumbered=true,
+    unicode=true
+]{hyperref}
+
+\hypersetup{
+    pdftitle={Analise de Algoritmos Criptograficos Classicos e Quanticos: Seguranca, Performance e Velocidade - Parte Teorica},
+    pdfauthor={Francisco Lopes; Ines Batista; Raul Azevedo; Francisco Peixoto},
+    pdfsubject={Seguranca em Redes e Sistemas de Informacao - SRSI},
+    pdfkeywords={RSA, AES, Shor, Grover, criptografia clássica, criptografia pos-quantica}
+}
+
+\widowpenalty=10000
+\clubpenalty=10000
+\renewcommand{\arraystretch}{1.2}
+\captionsetup{font=small,labelfont=bf}
+\setlist{itemsep=2pt, topsep=4pt}
+
+\newcolumntype{Y}{>{\raggedright\arraybackslash}X}
+
+\begin{document}
+
+% ------------------------------------------------------------
+% CAPA
+% ------------------------------------------------------------
+\begin{titlepage}
+    \centering
+ 
+    \vspace*{2.5cm}
+ 
+
+    \includegraphics[width=0.65\textwidth]{iscte_logo.png}
+ 
+    \vspace{2.5cm}
+ 
+    {\large Mestrado em Engenharia Informática}\\[0.3cm]
+    {\large Mestrado em Engenharia de Telecomunicações e Informática}\\[0.3cm]
+    {\large Mestrado em Ciência de Dados}\\[0.3cm]
+    {\Large \textbf{Segurança em Redes e Sistemas de Informação}}
+ 
+    \vspace{2cm}
+ 
+    {\fontsize{22}{22}\selectfont \bfseries
+    O Impacto da Computação Quântica na Segurança dos Sistemas Criptográficos Clássicos: Análise dos Algoritmos de Shor e Grover sobre o RSA e o AES\par}
+ 
+    \vspace{2cm}
+ 
+    {\large \textbf{Autores:}}\\[0.5cm]
+    {\large
+    Francisco Lopes Nº 111358 \\[0.2cm]
+    Francisco Peixoto Nº 111270 \\[0.2cm]
+    Inês Batista Nº 142875 \\[0.2cm]
+    Raul Azevedo Nº 111479\par}
+ 
+    \vspace{2.5cm}
+ 
+    {\large \textbf{Docente:} Valderi Leithardt }\\[0.5cm]
+    {\large \textbf{Data:} outubro de 2026}
+ 
+    \vfill
+\end{titlepage}
+ 
+
+\pagenumbering{arabic}
+
+% ------------------------------------------------------------
+% RESUMO
+% ------------------------------------------------------------
+\section*{Resumo}
+\addcontentsline{toc}{section}{Resumo}
+
+A evolução da computação quântica representa um desafio significativo para a segurança dos sistemas criptográficos atualmente utilizados. Em particular, os algoritmos quânticos de Shor e de Grover ameaçam, respetivamente, os sistemas RSA e AES, amplamente utilizados na proteção das comunicações e da informação digital. Este relatório apresenta uma revisão do estado da arte, fundamentada em sete artigos científicos selecionados pelo grupo, analisando os princípios de funcionamento de ambos os algoritmos, o seu impacto nos sistemas criptográficos considerados, os recursos computacionais necessários à execução dos ataques e as limitações técnicas que ainda condicionam a sua aplicação prática. A literatura evidencia diferenças significativas entre as ameaças aos dois sistemas. No caso do RSA, o algoritmo de Shor permite comprometer fundamentalmente a sua segurança, sendo que as estimativas mais recentes apontam para a necessidade de 19 a 21 milhões de qubits físicos e tempos de execução entre seis horas e alguns dias. Por sua vez, o algoritmo de Grover reduz aproximadamente para metade a segurança efetiva do AES, embora a sua implementação exija circuitos quânticos de elevada profundidade, cuja execução continua a representar um desafio tecnológico. Conclui-se que a substituição do RSA por algoritmos criptográficos pós-quânticos é essencial para garantir a segurança futura dos sistemas, enquanto o AES poderá continuar a ser utilizado com chaves de 256 bits e modos de operação adequados.
+
+\vspace{6pt}
+\noindent\textbf{Palavras-chave:} Criptografia Clássica; RSA; AES; Algoritmo de Shor; Algoritmo de Grover; Criptografia pós-quântica.
+
+
+
+\clearpage
+
+% ------------------------------------------------------------
+% ABSTRACT
+% ------------------------------------------------------------
+\section*{Abstract}
+\addcontentsline{toc}{section}{Abstract}
+
+The evolution of quantum computing represents a significant challenge to the security of currently used cryptographic systems. In particular, Shor's and Grover's quantum algorithms threaten, respectively, the RSA and AES systems, widely used in the protection of digital communications and information. This report presents a review of the state of the art, based on seven scientific articles selected by the group, analyzing the operating principles of both algorithms, their impact on the cryptographic systems considered, the computational resources required for the execution of attacks, and the technical limitations that still condition their practical application. The literature shows significant differences between the threats to the two systems. In the case of RSA, Shor's algorithm allows for fundamentally compromising its security, and the most recent estimates point to the need for 19 to 21 million physical qubits and execution times between six hours and a few days. In turn, Grover's algorithm approximately halves the effective security of AES, although its implementation requires high-depth quantum circuits, the execution of which remains a technological challenge. It is concluded that replacing RSA with post-quantum cryptographic algorithms is essential to ensure the future security of systems, while AES can continue to be used with 256-bit keys and appropriate operating modes.
+
+\vspace{6pt}
+\noindent\textbf{Key-words:} Classical cryptography; RSA; AES; Shor's algorithm; Grover's algorithm; Post-quantum cryptography.
+
+
+\clearpage
+
+% ------------------------------------------------------------
+% INDICE
+% ------------------------------------------------------------
+\tableofcontents
+\clearpage
+
+% ------------------------------------------------------------
+% GLOSSARIO
+% ------------------------------------------------------------
+\section*{Glossário}
+\addcontentsline{toc}{section}{Glossário}
+
+\begin{multicols}{2}
+\raggedcolumns
+\begin{description}[style=nextline, leftmargin=0.9em, font=\small\bfseries, itemsep=2pt, topsep=1pt]
+\small
+\item[AES] Advanced Encryption Standard - norma de cifra de blocos simétrica estabelecida pelo NIST, que suporta chaves de 128, 192 ou 256 bits.
+\item[CBC] Cipher Block Chaining - modo de operação de cifras de blocos em que cada bloco de texto limpo é combinado (XOR) com o bloco cifrado anterior antes de ser cifrado.
+\item[CCZ] Controlled-Controlled-Z - porta quântica de três qubits que aplica uma operação Z quando os dois qubits de controlo se encontram no estado $\ket{1}$.
+\item[CFB] Cipher Feedback - modo de operação que cifra o bloco cifrado anterior e combina o resultado (XOR) com o texto limpo, transformando a cifra de blocos numa cifra de fluxo.
+\item[Clifford+T] Conjunto universal de portas quânticas que combina portas de Clifford, como H, S e CNOT, com a porta não-Clifford T. Em arquiteturas tolerantes a falhas, as portas T representam uma parte significativa do custo computacional.
+\item[ECC] Elliptic Curve Cryptography -  criptografia de chave pública baseada no logaritmo discreto em curvas elípticas.
+\item[KQ$_p$] Produto do número de qubits físicos pelo tempo de execução (passos de rede); métrica de compromisso espaço-tempo.
+\item[MSD] Magic State Distillation - processo de destilação de estados mágicos, utilizado para obter estados de elevada fidelidade necessários à implementação de portas não-Clifford.
+\item[NISQ] Noisy Intermediate-Scale Quantum -  designação atribuída a computadores quânticos de escala intermédia, caracterizados pela presença de ruído e pela ausência de tolerância a falhas.
+\item[NIST] National Institute of Standards and Technology - Instituto Nacional de Normas e Tecnologia dos Estados Unidos, responsável pela normalização do AES e pela padronização de algoritmos criptográficos pós-quânticos.
+\item[OFB] Output Feedback - modo de operação que realimenta a saída da própria cifra para gerar um fluxo de chave, independente do texto limpo e do texto cifrado.
+\item[PQC] Post-Quantum Cryptography -  criptografia resistente a adversários quânticos, executável em hardware clássico.
+\item[QEC] Quantum Error Correction - correção quântica de erros, através da codificação redundante de qubits lógicos em múltiplos qubits físicos.
+\item[QFT / QPE] Quantum Fourier Transform e Quantum Phase Estimation - transformada de Fourier quântica e estimativa de fase, blocos centrais do algoritmo de Shor.
+\item[qRAM] Quantum Random-Access Memory -  memória endereçável em superposição, ainda por demonstrar em grande escala.
+\item[QROM] Quantum Read-Only Memory - tabela de consulta quântica que carrega dados clássicos em superposição.
+\item[RSA] Rivest-Shamir-Adleman -  criptossistema de chave pública cuja segurança assenta na dificuldade da fatorização de inteiros.
+\item[S-AES] Simplified AES - versão simplificada do AES, de carácter didático, utilizada para demonstrar os princípios de funcionamento de cifras de blocos.
+\item[Surface Code] Código 2D de correção de erros com limiar de erro relativamente elevado, usado nas estimativas deste projeto.
+\item[T-depth] Profundidade de um circuito medida em camadas de portas T, principal métrica de profundidade em arquiteturas Clifford+T.
+\item[Toffoli] Porta quântica Controlled-Controlled-NOT (CCNOT), que inverte o qubit-alvo quando ambos os qubits de controlo estão no estado $\ket{1}$.
+\end{description}
+\end{multicols}
+
+\clearpage
+
+% ------------------------------------------------------------
+% 1. INTRODUCAO
+% ------------------------------------------------------------
+\section{Introdução}\label{sec:intro}
+
+A computação quântica deixou de ser uma questão puramente teórica para se tornar uma preocupação real de segurança. Em 2023, a IBM lançou o processador Condor, com 1121 qubits, e a Google já demonstrou protótipos de correção de erros~\cite{oonishi2026}. Estes computadores ainda estão longe de conseguir quebrar sistemas criptográficos reais, mas a direção é clara: existem algoritmos quânticos que atacam os princípios matemáticos da criptografia que usamos hoje. O algoritmo de Shor resolve em tempo polinomial a fatorização de inteiros, problema no qual assenta a segurança do RSA, enquanto o algoritmo de Grover acelera a pesquisa exaustiva de chaves, enfraquecendo cifras simétricas como o AES~\cite{wang2022,chethana2025}.
+
+O problema de investigação que orienta este projeto é o seguinte: o avanço da computação quântica tem levantado questões sobre o nível de segurança dos sistemas criptográficos clássicos. Os algoritmos quânticos de Shor e Grover podem afetar sistemas como o RSA e o AES, respetivamente, através de abordagens diferentes. É relevante analisar qual é o impacto destes algoritmos na segurança criptográfica, os recursos computacionais estimados para a sua execução e as limitações técnicas identificadas na literatura científica.
+
+Para dar resposta a este problema, o trabalho está estruturado em torno de uma questão genérica e de quatro questões específicas:
+
+\begin{itemize}
+\item \textbf{GQ1:} Qual é o impacto dos algoritmos quânticos de Shor e Grover na segurança dos sistemas criptográficos clássicos RSA e AES?
+\item \textbf{FQ1:} Como é que o algoritmo de Shor afeta a segurança do RSA?
+\item \textbf{FQ2:} Como é que o algoritmo de Grover afeta a segurança do AES?
+\item \textbf{FQ3:} Que recursos computacionais são estimados para executar os algoritmos de Shor contra o RSA e de Grover contra o AES?
+\item \textbf{FQ4:} Como se comparam os ataques quânticos e os melhores ataques clássicos conhecidos contra o RSA e o AES, em termos de complexidade computacional e recursos estimados?
+\end{itemize}
+
+Este relatório corresponde à parte teórica do projeto e tem três objetivos: rever o estado da arte sobre a ameaça quântica ao RSA e ao AES, com base num corpus de sete artigos científicos; sistematizar as estimativas de recursos computacionais reportadas na literatura; e comparar os ataques quânticos com os melhores ataques clássicos conhecidos. Esta análise serve de base à parte prática do projeto, na qual os algoritmos serão implementados e testados em simuladores quânticos e, quando possível, na plataforma IBM Quantum.
+
+O documento está organizado da seguinte forma: a Secção~\ref{sec:metodologia} descreve a metodologia de revisão da literatura; a Secção~\ref{sec:estadoarte} revê o estado da arte e responde ao FQ1 e ao FQ2; a Secção~\ref{sec:recursos} sistematiza as estimativas de recursos computacionais e as limitações técnicas (FQ3); a Secção~\ref{sec:comparacao} compara os ataques quânticos com os ataques clássicos (FQ4); a Secção~\ref{sec:relacionados} compara os trabalhos analisados entre si; e a Secção~\ref{sec:conclusoes} apresenta as conclusões e o trabalho futuro.
+
+\clearpage
+
+% ------------------------------------------------------------
+% 2. METODOLOGIA
+% ------------------------------------------------------------
+\section{Metodologia de Revisão da Literatura}\label{sec:metodologia}
+
+A revisão da literatura foi orientada pelas questões de investigação. Com base nestas, definiram-se as palavras-chave e as fontes de pesquisa. A pesquisa decorreu na ACM Digital Library, na IEEE Xplore, na Scopus e na ScienceDirect, com as palavras-chave AES, Grover’s algorithm, RSA, Shor’s algorithm, classical attacks, computational complexity, computational resources, cryptographic security e quantum attacks. Dos resultados obtidos, selecionaram-se artigos da ACM Digital Library~\cite{zhou2025,luongo2025}, da IEEE Xplore~\cite{oonishi2026,chethana2025}~e da Scopus~\cite{huang2022,liu2023, wang2022}.
+
+No total, selecionaram-se sete artigos que, em conjunto, cobrem as duas frentes do problema: o algoritmo de Shor contra o RSA e o algoritmo de Grover contra o AES. Os critérios de seleção foram quatro: alinhamento direto com os algoritmos e alvos definidos nas questões de investigação; publicação a partir de 2022, privilegiando investigação recente; publicação em veículos reconhecidos da área (conferências da IACR como o ASIACRYPT, conferências de sistemas como o ISCA e o DAC, e revistas indexadas como o IEEE Access e a Frontiers of Physics); e complementaridade de perspetivas, combinando síntese de circuitos quânticos, arquiteturas tolerantes a falhas, otimização aritmética e avaliação comparativa de complexidade. A Tabela~\ref{tab:corpus} sintetiza o corpus.
+
+\begin{table}[htbp]
+\centering
+\caption{Corpus de artigos selecionados para a componente teórica.}
+\label{tab:corpus}
+\footnotesize
+\begin{tabularx}{\textwidth}{c Y Y Y Y}
+\toprule
+\textbf{Ref.} & \textbf{Artigo (autores, ano)} & \textbf{Fonte} & \textbf{Algoritmo / alvo} & \textbf{Metodologia} \\
+\midrule
+\cite{zhou2025} & Zhou et al., 2025 & ISCA & Shor $\rightarrow$ RSA-2048 & Estimativa de recursos arquiteturais \\
+\cite{luongo2025} & Luongo et al., 2025 & DAC & Shor $\rightarrow$ RSA-2048 & Otimização de aritmética quântica \\
+\cite{oonishi2026} & Oonishi e Kunihiro, 2026 & IEEE Access & Shor $\rightarrow$ RSA & Análise comparativa de complexidade \\
+\cite{huang2022} & Huang e Sun, 2022 & ASIACRYPT & Grover $\rightarrow$ AES & Síntese de circuitos quânticos \\
+\cite{liu2023} & Liu et al., 2023 & ASIACRYPT & Grover $\rightarrow$ AES & Síntese de circuitos quânticos \\
+\cite{wang2022} & Wang et al., 2022 & Front.\ Phys. & Grover $\rightarrow$ AES & Desenho de circuitos quânticos \\
+\cite{chethana2025} & Chethana et al., 2025 & IEEE Access & Cifras de blocos (revisão) & Revisão da literatura \\
+\bottomrule
+\end{tabularx}
+\end{table}
+
+Cada artigo foi analisado quanto ao seu mecanismo de ataque, às métricas de custo utilizadas (número de qubits físicos e lógicos, contagem e profundidade de portas T e Toffoli, profundidade quântica), às premissas de hardware assumidas e às limitações reconhecidas pelos próprios autores. Os números extraídos dos artigos contribuem para as Secções~\ref{sec:recursos} a \ref{sec:relacionados}. Para além disso, é importante referir que dois dos artigos~\cite{huang2022, liu2023}~foram publicados nas atas do ASIACRYPT 2022 e 2023, pelo que o relatório se limita aos capítulos selecionados.
+
+\clearpage
+
+% ------------------------------------------------------------
+% 3. ESTADO DA ARTE
+% ------------------------------------------------------------
+\section{Estado da Arte}\label{sec:estadoarte}
+
+\subsection{Criptografia clássica alvo: RSA e AES}\label{sec:classica}
+
+O RSA é um sistema de chave pública cuja segurança depende da dificuldade computacional de fatorizar inteiros grandes. Mais precisamente, dado um inteiro $N$, que é o produto de dois números primos grandes, pretende-se reconstruir esses primos conhecendo apenas $N$. Atualmente, não se conhece nenhum algoritmo clássico que consiga fatorizar inteiros em tempo polinomial. Esta dificuldade computacional constitui o fundamento da segurança do RSA~\cite{oonishi2026,wang2022}. As chaves RSA utilizadas atualmente têm tipicamente 2048 bits, recomendando-se 3072 ou 4096 bits para horizontes de segurança mais longos. Estes são exatamente os tamanhos considerados nas estimativas para ataques quânticos apresentadas na Secção~\ref{sec:recursos}.
+
+O AES, por sua vez, é uma cifra de blocos simétrica, o que significa que utiliza a mesma chave para cifrar e decifrar informação. Processa blocos de dados de 128 bits e aceita chaves de 128, 192 ou 256 bits, às quais correspondem, respetivamente, 10, 12 ou 14 rondas de transformção ~\cite{chethana2025,wang2022}. Cada ronda é constituída por quatro transformações principais: AddRoundKey, SubBytes, ShiftRows e MixColumns, que misturam os dados de forma a que qualquer alteração na entrada se propague por todo o bloco, aumentado a resistência da cifra a diversos tipos de ataques. É relevante notar que a última ronda não inclui a transformação MixColumns. Do ponto de vista clássico, a resistência do AES à pesquisa exaustiva do espaço de chaves depende do tamanho da chave. A complexidade desta abordagem pode ser expressa por:
+\begin{equation}\label{eq:bruteforce}
+C_{\text{clássico}}(n) = \mathcal{O}(2^{n}),
+\end{equation}
+onde $n$ representa o comprimento da chave, em bits. Existem também ataques criptoanalíticos dedicados: linear, diferencial e integral~\cite{chethana2025}.
+
+\subsection{O essencial da computação quântica}\label{sec:quantica}
+
+Um computador quântico processa informação através de qubits que, ao contrário dos bits clássicos, podem encontrar-se em estados de superposição. Os cálculos são realizados através de portas quânticas organizadas em circuitos~\cite{chethana2025}. As estimativas de recursos criptográficos consideram um modelo de computação em que as chamadas portas de Clifford (H, S, CNOT) são relativamente baratas comparativamente com as portas não-Clifford, em particular a porta T, cuja implementação é a mais dispendiosa. Assim, os custos dos circuitos são habitualmente caracterizados por métricas como o número de qubits necessários, a contagem total de portas T e a profundidade em portas T (\emph{T-depth}). Outra operação frequentemente considerada é a porta Toffoli, que é equivalente a uma operação AND reversível e pode ser decomposta numa sequência de portas Clifford e T~\cite{huang2022,liu2023}.
+
+Atualmente, os qubits físicos dos computadores quânticos são ruidosos e revelam taxas de erro na ordem de $10^{-2}$ a $10^{-4}$, valores que comprometem a fiabilidade da execução de algoritmos quânticos de grande escala~\cite{zhou2025}. Uma das soluções para este problema é a correção quântica de erros, QEC, que permite codificar um qubit lógico, sem erro, num conjunto de qubits físicos. Nas estimativas de recursos, um código muito utilizado é o código de superfície, que requer $2(d+1)^2$ qubits físicos por qubit lógico, sendo $d$ a distância do código. Em geral, quanto maior for $d$, menor será a probabilidade de erro lógico, que pode ser aproximada por
+\begin{equation}\label{eq:surface}
+p_L \approx C\,\left(\frac{p}{p_{\text{th}}}\right)^{(d+1)/2},
+\end{equation}
+onde $p$ representa a taxa de erro físico, $p_{\text{th}}$ o limiar de erro do código (na ordem de 1\%) e $C$ uma constante próxima de $0{,}1$~\cite{zhou2025}. Além disso, a implementação de portas não-Clifford exige frequentemente \emph{estados mágicos}, que são produzidos em fábricas dedicadas e ocupam uma fração significativa dos recursos do computador~\cite{zhou2025,oonishi2026}. É esta sobrecarga, que envolve milhares de qubits físicos por qubit lógico e recursos dedicados à produção de estados mágicos, que permite traduzir os custos teóricos dos algoritmos de Shor em números concretos de qubits físicos necessários e do tempo de execução, apresentados na Secção~\ref{sec:recursos}. Oonishi e Kunihiro~\cite{oonishi2026} usam ainda a métrica
+\begin{equation}\label{eq:kqp}
+\mathrm{KQ}_p = Q_{\text{fis}} \times T_{\text{rede}},
+\end{equation}
+que corresponde à multiplicação entre o número de qubits físicos e o tempo de execução, medido em passos de rede, permitindo comparar diferentes compromissos entre recursos espaciais e temporais.
+
+\subsection{O algoritmo de Shor e o impacto no RSA (FQ1)}\label{sec:shor}
+
+O algoritmo de Shor resolve a fatorização de inteiros em tempo polinomial~\cite{wang2022}, e é precisamente esse resultado que ameaça o RSA: a segurança do sistema assenta na inexistência de um algoritmo clássico suficientemente rápido para fatorizar (Secção~\ref{sec:classica}). O núcleo do algoritmo é a determinação do período da função modular
+\begin{equation}\label{eq:periodo}
+f(x) = g^{x} \bmod N,
+\end{equation}
+em que $g$ é um número inteiro primo com $N$: o período $r$ é o menor número inteiro positivo tal que $g^{x+r} = g^{x} \bmod N$ para todo o $x$. Conhecido $r$, o processamento clássico calcula o maior divisor comum de $N$ com $g^{r/2}-1$ e com $g^{r/2}+1$, e o resultado devolve os fatores primos de $N$ quando $r$ é par e $g^{r/2} \not\equiv -1 \pmod{N}$. Caso contrário, repete-se o algoritmo com outra base $g$.
+
+A parte quântica do algoritmo está concentrada na determinação do período. O computador prepara uma superposição de expoentes $x$, avalia $f(x)$ sobre essa superposição e extrai o período por estimativa de fase com a transformada de Fourier quântica (QFT)~\cite{zhou2025}. A operação mais pesada é a exponenciação modular, implementada com multiplicações e adições modulares controladas~\cite{oonishi2026,luongo2025}.
+
+Para um inteiro de $n = \lceil \log_{2} N \rceil$ bits, o custo total em portas é
+\begin{equation}\label{eq:shor}
+T_{\text{Shor}}(n) = \mathcal{O}(n^{3}) = \mathcal{O}\!\left((\log N)^{3}\right),
+\end{equation}
+ou seja, polinomial no tamanho da entrada~\cite{wang2022,zhou2025}. É esta dependência polinomial que torna inútil aumentar o tamanho da chave face a um adversário quântico: duplicar $n$ torna o ataque cerca de oito vezes mais exigente, ao passo que nenhum algoritmo clássico conhecido resolve a fatorização em tempo polinomial, pelo que o mesmo aumento tem um efeito muito mais acentuado~\cite{zhou2025}. Neste sentido, variantes recentes, como a de Ekerå--Håstad adotada por Zhou et al., reforçam esta tendência, reduzindo o comprimento do expoente requerido e aumentando a probabilidade de sucesso do processamento clássico~\cite{zhou2025}.
+
+Em suma, o RSA não resiste ao algoritmo de Shor: ao contrário do que acontece com os ataques clássicos, aumentar a chave não restabelece a segurança. Um computador quântico tolerante a falhas executa o algoritmo de Shor e quebra o RSA para qualquer tamanho de chave utilizável na prática; uma variante do mesmo algoritmo resolve o logaritmo discreto e quebra igualmente a ECC~\cite{oonishi2026,wang2022}. A resposta identificada na literatura não é, por isso, reforçar o RSA, mas substituí-lo por primitivas pós-quânticas, um processo que o NIST já conduz através da padronização de novos algoritmos~\cite{chethana2025}.
+
+\subsection{O algoritmo de Grover e o impacto no AES (FQ2)}\label{sec:grover}
+
+O algoritmo de Grover ataca o AES de forma genérica: trata a recuperação da chave como um problema de pesquisa exaustiva num espaço de $N = 2^{n}$ chaves possíveis, sem explorar a estrutura interna da cifra. O algoritmo prepara uma superposição de todas as chaves candidatas e repete dois passos: o oráculo, que marca a chave correta invertendo-lhe a fase, e o operador de difusão, que amplifica essa marca. O progresso da amplificação descreve-se através de um ângulo $\theta$ definido por $\sin\theta = 1/\sqrt{N}$: após $M$ iterações, a probabilidade de medir a chave correta é máxima quando
+\begin{equation}\label{eq:grover-iter}
+(2M+1)\,\theta \approx \frac{\pi}{2},
+\end{equation}
+o que conduz a
+\begin{equation}\label{eq:grover}
+M \approx \frac{\pi}{4}\,2^{n/2} = \mathcal{O}\!\left(2^{n/2}\right)
+\end{equation}
+iterações (cada uma equivalente a uma chamada ao oráculo), contra às $2^{n}$ tentativas da pesquisa exaustiva clássica de~\eqref{eq:bruteforce}~\cite{chethana2025,wang2022}. Na prática, o número de bits de segurança passa para metade: o AES-128 desce de 128 para cerca de 64 bits ($2^{128}$ passam para $2^{64}$ operações), o AES-192 para 96 e o AES-256 para 128~\cite{chethana2025,wang2022}. 
+
+Importa referir que as iterações de Grover são sequenciais, porque cada uma depende do resultado da anterior. A alternativa, que consiste em dividir o espaço de pesquisa por vários ataques em paralelo, é possível, mas multiplicaria o número de qubits e de portas necessários~\cite{huang2022}. Este ponto volta a ser discutido nas Secções~\ref{sec:limitacoes} e~\ref{sec:comparacao}.
+
+Duas observações da literatura matizam este impacto. Primeiro, o número de iterações não é, por si só, o custo total do ataque: cada chamada ao oráculo executa uma implementação quântica completa do AES, e é esse circuito que domina o custo real. Quanto mais eficientes forem os circuitos, mais barato fica o ataque, e é precisamente isso que os artigos de circuitos procuram (Secção~\ref{sec:rec-aes})~\cite{wang2022,huang2022,liu2023}. Segundo, a suposição de que basta duplicar o comprimento da chave para ficar protegido é uma simplificação: existem ataques que exploram a estrutura das cifras e dos seus modos de operação, pelo que a defesa tem de ir além do simples aumento do comprimento da chave~\cite{chethana2025}.
+
+Em suma, ao contrário do que acontece com o RSA, a resposta ao Grover não é substituir o AES, mas escolher bem os parâmetros: o AES-256 mantém 128 bits de segurança mesmo perante um atacante quântico, e os modos de operação devem ser escolhidos com cuidado, porque a defesa não se esgota no comprimento da chave~\cite{chethana2025}.
+
+\clearpage
+
+% ------------------------------------------------------------
+% 4. RECURSOS COMPUTACIONAIS
+% ------------------------------------------------------------
+\section{Recursos Computacionais Estimados (FQ3)}\label{sec:recursos}
+
+\subsection{Shor contra o RSA}\label{sec:rec-rsa}
+
+As estimativas de recursos para fatorizar o RSA-2048 diferem sobretudo pela plataforma física e pelo ciclo de correção de erros assumido; apresentam-se de seguida as estimativas reportadas no corpus. O ponto de referência é a estimativa de Gidney e Ekerå, usada como base tanto por Luongo et al.~\cite{luongo2025} como por Oonishi e Kunihiro~\cite{oonishi2026}: fatorizar o RSA-2048 em cerca de 8 horas com aproximadamente 20 milhões de qubits físicos, numa plataforma supercondutora com ciclo de correção de erros de 1~$\mu$s. Zhou et al.~\cite{zhou2025} mostram que as estimativas variam entre cerca de oito horas e vários anos, consoante a plataforma, desde os supercondutores, com ciclo de 1~$\mu$s, até iões aprisionados e átomos neutros com ciclo de 1~ms. A plataforma e a arquitetura surgem, assim, como o fator dominante.
+
+A proposta de Zhou et al.~\cite{zhou2025} insere-se nas plataformas de ciclo mais lento: uma arquitetura de baixa sobrecarga para arranjos de átomos neutros reconfiguráveis, em que as portas lógicas transversais exigem apenas $\mathcal{O}(1)$ rondas de correção por passo, e não as $\mathcal{O}(d)$ dos esquemas habituais, o que acelera a execução por um fator próximo da distância do código $d$. Com fábricas de estados mágicos combinadas com \emph{cultivation}, os autores estimam que a fatorização do RSA-2048 requer $3\times 10^{9}$ portas CCZ e pode ser concluída em 5,6 dias com 19 milhões de qubits.
+
+Este tempo não é diretamente comparável às 8 horas de Gidney--Ekerå, porque o ciclo de correção de erros assumido é mil vezes mais lento; o ganho de cerca de 50 vezes reportado refere-se a arquiteturas anteriores para átomos neutros, baseadas em \emph{lattice surgery}, cujas estimativas se traduziriam em execuções de vários anos.
+
+Numa direção diferente, Luongo et al.~\cite{luongo2025} otimizam a aritmética em vez da arquitetura: a técnica de \emph{windowed arithmetic} substitui multiplicações modulares por consultas a tabelas pré-computadas (QROM). É esta a ligação ao custo $\mathcal{O}(n^{3})$ da Secção~\ref{sec:shor}: a exponenciação modular consiste em $\mathcal{O}(n)$ multiplicações modulares de custo $\mathcal{O}(n^{2})$ cada, pelo que reduzir o custo por multiplicação para $\mathcal{O}(n^{2}/\log^{2} n)$ melhora a exponenciação (e, com ela, o custo global do ataque) para $\mathcal{O}(n^{3}/\log^{2} n)$~\cite{luongo2025}. Com quatro otimizações adicionais, os autores melhoram as estimativas dentro do quadro de Gidney--Ekerå: o número de portas Toffoli desce entre 1,5\% e 3,4\%, dependendo do tamanho da chave. Para o RSA-2048, o tempo esperado desce cerca de 16\% (de 7,3 para 6,1 horas), à custa de mais 12\% de qubits físicos (de 19,2 para 21,6 milhões). Os autores reportam também um risco de repetição de 31\%, ou seja, a probabilidade de uma execução falhar e ter de ser repetida (por exemplo, porque a base sorteada não satisfaz as condições da Secção~\ref{sec:shor}).
+
+Por fim, Oonishi e Kunihiro~\cite{oonishi2026} comparam quatro construções da aritmética modular (duas variantes de Ripple-Carry, Carry-Lookahead e Fourier-basis) combinadas com três protocolos de destilação de estados mágicos, sobre códigos de superfície, usando a métrica $\mathrm{KQ}_p$ de~\eqref{eq:kqp}. Concluem que o método Carry-Lookahead alcança o menor $\mathrm{KQ}_p$ e que a sobrecarga total da correção de erros, em tempo e em espaço, é no máximo polinomial, pelo que o algoritmo de Shor continua a ser eficiente mesmo com correção de erros completa. Os valores absolutos, porém, são muito sensíveis ao modelo de custos: numa das configurações avaliadas, obtêm 1,81$\times$10$^{7}$ qubits físicos e cerca de 558 dias de execução, ilustrando como premissas diferentes alteram as estimativas em ordens de grandeza. A Tabela~\ref{tab:rsa} e a Figura~\ref{fig:rsa} sintetizam as estimativas.
+
+\begin{table}[htbp]
+\centering
+\caption{Estimativas de recursos para fatorizar RSA-2048 reportadas no corpus. As premissas diferem entre estudos (plataforma física, taxa de erro, ciclo de correção de erros, protocolo de destilação), pelo que os valores não são diretamente comparáveis entre linhas.}
+\label{tab:rsa}
+\footnotesize
+\begin{tabularx}{\textwidth}{Y c c Y}
+\toprule
+\textbf{Estudo} & \textbf{Qubits físicos} & \textbf{Tempo esperado} & \textbf{Premissas principais} \\
+\midrule
+Gidney--Ekerå (base usada por~\cite{luongo2025,oonishi2026}) & $\sim$20 M & $\sim$8 h & Supercondutores, ciclo 1~$\mu$s \\
+Luongo et al.~\cite{luongo2025} (base) & 19,2 M & 7,3 h & Erro físico $10^{-3}$, risco de repetição 31\% \\
+Luongo et al.~\cite{luongo2025} (otimizado) & 21,6 M & 6,1 h & Aritmética janelada otimizada, 2,66$\times$10$^{9}$ Toffoli \\
+Zhou et al.~\cite{zhou2025} & 19 M & 5,6 dias & Átomos neutros, ciclo 1~ms, portas transversais, 3$\times$10$^{9}$ CCZ \\
+Oonishi e Kunihiro~\cite{oonishi2026} (exemplo) & 1,81$\times$10$^{7}$ & $\sim$558 dias & Ripple-Carry (Gidney) + destilação de Litinski \\
+\bottomrule
+\end{tabularx}
+\end{table}
+
+\begin{figure}[htbp]
+\centering
+\includegraphics[width=0.98\textwidth]{figs/fig_rsa2048.png}
+\caption{Estimativas para o RSA-2048: (a)~número de qubits físicos e (b)~tempo esperado de execução (escala logarítmica). O asterisco indica valores de referência de Gidney--Ekerå, tal como reportados por~\cite{luongo2025,oonishi2026}. A disparidade de tempos decorre sobretudo do ciclo de correção de erros assumido (1~$\mu$s vs.\ 1~ms) e do escalonamento das fábricas de estados mágicos.}
+\label{fig:rsa}
+\end{figure}
+
+\subsection{Grover contra o AES}\label{sec:rec-aes}
+
+No ataque de Grover ao AES, o oráculo inclui a implementação quântica da cifra, pelo que os recursos necessários para o ataque dependem dos circuitos quânticos do AES. A investigação recente tem procurado otimizar estes circuitos segundo duas vertentes principais: a largura, que corresponde ao número de qubits utilizados, e a profundidade, que é avaliada através de métricas como a profundidade em portas T (\emph{T-depth}) e a profundidade total do circuito, tendo em conta também o número de portas T (\emph{T-count}). Quanto à largura, Wang et al.~\cite{wang2022} propõem uma reformulação do circuito de expansão de chaves, onde poupam 224 qubits face ao circuito de Langenberg et al. Assim, o circuito de encriptação do AES-128 passa de 880 para 656 qubits, com um número de portas semelhantes.
+
+Huang e Sun~\cite{huang2022} centram-se na largura e no \emph{T-depth}, apresentando um circuito do S-box do AES com T-depth 3 e uma estrutura \emph{round-in-place} que minimiza a largura. Relativamente ao circuito de EUROCRYPT 2020, o T-depth diminui de 60 para 40 sem aumento de largura. Face aos circuitos de ASIACRYPT 2020, a largura diminui de 512 para 374 qubits. Os circuitos foram implementados em Q\#. Por sua vez, Liu et al.~\cite{liu2023} reduzem o número de qubits auxiliares do S-box de 120 para 83 e partilham qubits entre o S-box e o respetivo adjunto (transposta conjugada). Reduzem também a profundidade total dos circuitos para 730, 876 e 1018, para AES-128, AES-192 e AES-256, respetivamente. Segundo os resultados apresentados, estas otimizações permitem um custo, medido pelo produto entre a largura e a profundidade, 35\% inferior ao obtido por Huang e Sun.
+
+Wang et al.~\cite{wang2022} apresentam um circuito completo do S-AES, uma versão simplificada do AES, com 48 qubits, 168 portas Toffoli e 364 CNOT. Segundo os autores, este circuito já é adequado para simuladores clássicos e acessível aos computadores NISQ existentes, o que é relevante para a Parte 2 deste projeto, uma vez que fornece um caso de estudo concreto para implementar e avaliar o ataque de Grover em simuladores. A Tabela~\ref{tab:aes} consolida os circuitos AES-128 considerados, exceto Wang et al., pois não menciona Toffoli-depth.
+
+\begin{table}[htbp]
+\centering
+\caption{Evolução dos circuitos de encriptação do AES-128 sem decompor as portas Toffoli, conforme a Tabela 11 de~\cite{liu2023}}
+\label{tab:aes}
+\footnotesize
+\begin{tabularx}{\textwidth}{Y c c c c c}
+\toprule
+\textbf{Estudo} & \textbf{Largura (qubits)} & \textbf{Toffoli-depth} & \textbf{Toffoli} & \textbf{CNOT} & \textbf{Toffoli-depth$\times$Largura}\\
+\midrule
+Langenberg et al. & 864 & 1\,880 & 16\,940 & 107\,960 & 1\,624\,320 \\
+Zou et al. & 512 & 2\,016 & 19\,788 & 128\,517 & 1\,032\,192 \\
+Huang e Sun~\cite{huang2022} ($p=9$) & 374 & 1\,558 & 17\,888 & 126\,016 & 582\,692 \\
+Jang et al. & 6\,368 & 40 & 12\,240 & 81\,312 & 254\,720 \\
+Liu et al.~\cite{liu2023} (\emph{in-place}) & 3\,667 & 40 & 12\,920 & 65\,736 & 146\,680 \\
+\bottomrule
+\end{tabularx}
+\end{table}
+
+\subsection{Limitações técnicas identificadas na literatura}\label{sec:limitacoes}
+
+A leitura transversal do corpus permite identificar sete limitações que separam as estimativas teóricas da viabilidade prática. Agrupam-se em quatro planos: o hardware atual (ruído e sobrecarga da correção de erros), as premissas dos modelos de custos, o ataque de Grover ao AES e, por fim, os recursos e os modelos de acesso de que dependem os ataques mais avançados.
+
+\begin{itemize}
+\item \textbf{Ruído e escala:} os dispositivos atuais são NISQ, ou seja, demasiado ruidosos para executar os algoritmos criptográficos; estes exigem computação tolerante a falhas em escala de milhões de qubits físicos~\cite{oonishi2026,zhou2025}.
+\item \textbf{Sobrecarga da correção de erros:} cada qubit lógico custa $2(d+1)^{2}$ qubits físicos~\cite{luongo2025,oonishi2026} e as fábricas de estados mágicos dominam o volume do algoritmo, tornando as portas T e CCZ a principal limitação~\cite{zhou2025,oonishi2026}.
+\item \textbf{Sensibilidade às premissas:} o ciclo de correção de erros (de 1~$\mu$s em supercondutores a 1~ms em átomos neutros), o tempo de reação, que corresponde ao processamento clássico do descodificador entre cada medição e a operação quântica seguinte, o protocolo de destilação e o modelo de erros fazem variar as estimativas de tempo entre uma e três ordens de grandeza (Tabela~\ref{tab:rsa})~\cite{zhou2025,oonishi2026}.
+\item \textbf{Profundidade sequencial:} o ataque de Grover ao AES-128 requer da ordem de $2^{64}$ iterações quase totalmente sequenciais, e a paralelização por divisão do espaço de pesquisa multiplica o número de qubits e de portas~\cite{huang2022}. No AES-256, com $2^{128}$ iterações, o efeito é ainda mais severo.
+\item \textbf{Custo físico do oráculo:} as contagens de qubits e de profundidade da Secção~\ref{sec:rec-aes} são métricas lógicas, sem correção de erros~\cite{huang2022,liu2023}; sobre estas incidiria toda a sobrecarga física descrita na Secção~\ref{sec:quantica}, pelo que o custo físico do ataque de Grover seria muito superior ao indicado.
+\item \textbf{Memória quântica:} alguns ataques mais rápidos da pesquisa de Grover, como as variantes quânticas do ataque Square revistas em~\cite{chethana2025}, assumem qRAM de grande escala, hardware cuja construção permanece por demonstrar, ao passo que as estimativas conservadoras não assumem qRAM~\cite{chethana2025}.
+\item \textbf{Modelos de acesso:} parte dos ganhos adicionais reportados assume o modelo Q2, em que o adversário consulta o oráculo em superposição: submete uma superposição de mensagens e recebe a superposição das respetivas cifras. No modelo Q1, as consultas são clássicas e apenas o processamento é quântico. No modelo Q2, a segurança passa a depender do modo de operação. Para uma função pseudoaleatória (PRF) padrão, os modos CBC e CFB deixam de ser seguros, ao passo que o OFB e o CTR se mantêm. Efeitos puramente quânticos, como a resistência à superposição, permanecem pouco explorados~\cite{chethana2025}.
+\end{itemize}
+
+Em conjunto, estas limitações não constituem obstáculos fundamentais aos algoritmos de Shor e de Grover, apenas desafios de engenharia e de modelação. Explicam, no entanto, a dispersão das estimativas entre estudos e fundamentam a leitura prudente apresentada na Secção~\ref{sec:conclusoes}.
+
+\clearpage
+
+% ------------------------------------------------------------
+% 5. COMPARACAO QUANTICO VS CLASSICO
+% ------------------------------------------------------------
+\section{Comparação entre Ataques Quânticos e Clássicos (FQ4)}\label{sec:comparacao}
+
+Para o RSA, não se conhece nenhum algoritmo clássico que fatorize $N$ em tempo polinomial~\cite{zhou2025}. No contexto da computação quântica, o algoritmo de Shor fatoriza $N$ com complexidade de $\mathcal{O}(n^{3})$ portas lógicas, onde $n$ representa o número de bits de $N$. A correção de erros mantém-se polinomial~\cite{oonishi2026}. Assim, a fatorização deixa de ser inviável do ponto de vista assintótico, embora a praticabilidade dependa do hardware disponível e dos custos associados à correção de erros, com estimativas concretas de qubits e de tempos (Secção~\ref{sec:rec-rsa}).
+
+Para o AES, a situação é diferente. O melhor ataque genérico clássico continua a ser, em termos práticos, a pesquisa exaustiva, com complexidade $\mathcal{O}(2^{n})$ de~\eqref{eq:bruteforce}, enquanto os ataques estruturais conhecidos não comprometem o AES completo~\cite{chethana2025}. O algoritmo de Grover reduz o expoente para metade, passando a complexidade para $\mathcal{O}(2^{n/2})$ de~\eqref{eq:grover}, mas mantém um crescimento exponencial. Desta forma, a segurança não é eliminada, mas é reduzida.
+
+No RSA, o ataque quântico altera a complexidade do problema de fatorização. Os recursos estimados, embora vastos, são quantificáveis: milhões de qubits e vários dias de execução. No AES, por sua vez, o ataque quântico mantém a classe exponencial e apenas reduz o expoente para metade. Além disso, cada iteração do algoritmo de Grover exige a execução completa do oráculo AES, o que, na prática, torna o custo real muito superior à contagem nominal de iterações~\cite{huang2022,liu2023}. 
+Assim, o RSA é o caso mais urgente da migração pós-quântica, enquanto o AES-256, quando utilizado com modos de operação apropriados, mantém uma margem de segurança significativa face às ameaças quânticas~\cite{chethana2025}.
+
+\clearpage
+
+% ------------------------------------------------------------
+% 6. COMPARATIVO ENTRE TRABALHOS RELACIONADOS
+% ------------------------------------------------------------
+\section{Comparativo entre Trabalhos Relacionados}\label{sec:relacionados}
+
+A Tabela~\ref{tab:relacionados} compara os sete estudos do corpus quanto ao foco, às métricas, aos resultados-chave e às limitações. A análise transversal dos sete estudos evidencia dois eixos de investigação complementares e uma ponte crítica entre eles.
+
+No eixo do RSA, os três estudos formam uma cadeia de otimização em camadas. A otimização aritmética de Luongo et al.~\cite{luongo2025} atua sobre o quadro de Gidney--Ekerå e diminui o custo do circuito lógico; a arquitetura transversal de Zhou et al.~\cite{zhou2025} atenua a sobrecarga da correção de erros ao nível físico, acelerando o relógio lógico. Com esta arquitetura, a fatorização do RSA-2048 em átomos neutros, que as estimativas anteriores situavam em vários anos, desce para 5,6 dias. A avaliação de Oonishi e Kunihiro~\cite{oonishi2026} compara sistematicamente as construções e demonstra que a sobrecarga total permanece polinomial e que a escolha do método de adição e da destilação importa. Os três convergem numa mensagem: de estudo para estudo, as estimativas continuam a melhorar dentro de cada quadro de referência, embora os valores absolutos não sejam diretamente comparáveis entre plataformas com premissas diferentes (Tabela~\ref{tab:rsa}).
+
+No eixo do AES, os três estudos de circuitos representam igualmente uma progressão: Wang et al.~\cite{wang2022} reduzem a largura (656 qubits para o AES-128; 48 para o S-AES, ao alcance de simulação completa), Huang e Sun~\cite{huang2022} reduzem a profundidade T (S-box com T-depth 3, o mínimo teórico) e Liu et al.~\cite{liu2023} reduzem a profundidade quântica global (730 para o AES-128) e os qubits auxiliares. Como o oráculo domina o custo de cada iteração (Secção~\ref{sec:grover}), cada redução torna o ataque mais barato, embora o custo total continue exponencial. A revisão de Chethana et al.~\cite{chethana2025} faz a ponte entre os dois eixos: alerta que a resposta ao Grover não pode resumir-se a duplicar chaves, porque existem ataques que exploram a estrutura das cifras e dos modos de operação, contornando a análise genérica. Em conjunto, os dois eixos ilustram a assimetria analisada na Secção~\ref{sec:comparacao}: no RSA, as otimizações aproximam a quebra, que já é total em teoria; no AES, apenas tornam mais barato um ataque que continua exponencial.
+
+\begin{table}[H]
+\centering
+\caption{Comparativo entre os trabalhos relacionados do corpus.}
+\label{tab:relacionados}
+\footnotesize
+\begin{tabularx}{\textwidth}{c Y Y Y Y}
+\toprule
+\textbf{Ref.} & \textbf{Foco} & \textbf{Métricas} & \textbf{Resultado-chave} & \textbf{Limitação principal} \\
+\midrule
+\cite{zhou2025} & Shor $\rightarrow$ RSA-2048 em átomos neutros transversais & Qubits físicos, tempo, contagem CCZ & 19 M qubits em 5,6 dias; aceleração $\sim$50$\times$ face a estimativas anteriores & Premissas de hardware futuras (ciclo 1~ms, portas transversais) \\
+\addlinespace
+\cite{luongo2025} & Aritmética janelada para ataques ao RSA-2048 & Toffoli, volume, tempo esperado & \emph{Unlookups} 50\% mais baratos; $-$16\% tempo, $+$12\% qubits; $-$1,5 a $-$3,4\% Toffoli & Ganho total modesto; compromisso espaço-tempo \\
+\addlinespace
+\cite{oonishi2026} & Comparação de 4 construções de Shor $\times$ protocolos MSD sobre códigos de superfície & $\mathrm{KQ}_p$, qubits físicos, dias & Carry-Lookahead minimiza $\mathrm{KQ}_p$; sobrecarga QEC no máximo polinomial & Modelos de tempos de portas alteram resultados em ordens de grandeza \\
+\addlinespace
+\cite{huang2022} & Circuito do AES com T-depth mínimo & T-depth, largura, Toffoli-depth & S-box com T-depth 3 (mínimo teórico); 512$\rightarrow$371 qubits; T-depth 60$\rightarrow$40 & Compromissos largura-profundidade; sem contagem física completa \\
+\addlinespace
+\cite{liu2023} & Circuitos AES com menor profundidade e largura & Profundidade quântica, auxiliares, custoDW & Profundidade 730/876/1018 (AES-128/192/256); custoDW $-$35\% face a Huang et al. & Métricas lógicas; não inclui correção de erros \\
+\addlinespace
+\cite{wang2022} & Circuitos AES-128 e S-AES com menos qubits & Qubits, Toffoli, CNOT & AES-128 com 656 qubits ($-$224); S-AES completo com 48 qubits (NISQ) & Oráculo menos otimizado em profundidade que~\cite{liu2023} \\
+\addlinespace
+\cite{chethana2025} & Revisão de cifras de blocos e considerações pós-quânticas & Taxonomia qualitativa & Dobrar chaves simplifica demais; ataques estruturais exigem defesas mais abrangentes & Sem estimativas numéricas próprias \\
+\bottomrule
+\end{tabularx}
+\end{table}
+
+\clearpage
+
+% ------------------------------------------------------------
+% 7. CONCLUSOES
+% ------------------------------------------------------------
+\section{Conclusões e Trabalho Futuro}\label{sec:conclusoes}
+
+A parte teórica do projeto permitiu responder de forma fundamentada à questão genérica GQ1 e às quatro questões específicas. Quanto ao FQ1, o algoritmo de Shor afeta a segurança do RSA de forma qualitativa: ao fatorizar $N$ com $\mathcal{O}(n^{3})$ portas lógicas, isto é, em tempo polinomial, elimina a dificuldade da fatorização em que o RSA assenta, tornando a sua segurança inexistente perante um adversário quântico tolerante a falhas~\cite{zhou2025,oonishi2026}.
+
+Quanto ao FQ2, o algoritmo de Grover afeta o AES de forma quantitativa: reduz a segurança efetiva de $2^{n}$ para $2^{n/2}$ (AES-128 passa para 64 bits de segurança, AES-192 para 96 e AES-256 para 128), sem quebrar a cifra~\cite{chethana2025,wang2022}; o custo prático é dominado pelo oráculo: circuitos com centenas de qubits lógicos e profundidades da ordem de $10^{3}$, que tem de ser executado por inteiro em cada iteração~\cite{wang2022,huang2022,liu2023}.
+
+Quanto ao FQ3, as estimativas do corpus situam a fatorização do RSA-2048 entre 19 e 21 milhões de qubits físicos, com um tempo de execução de horas a dias, dependendo da plataforma e das premissas de correção de erros~\cite{luongo2025,zhou2025}; para o AES, os circuitos do oráculo evoluíram para 656--880 qubits lógicos no AES-128, com profundidade quântica de 730, e o S-AES já é executável em 48 qubits~\cite{wang2022,liu2023}.
+
+Quanto ao FQ4, a comparação é assimétrica. Contra o RSA, onde não se conhece nenhum algoritmo clássico polinomial~\cite{zhou2025}, o ataque quântico altera a classe de complexidade do problema de fatorização e os recursos necessários, embora vastos, são finitos e quantificáveis: milhões de qubits e um tempo de execução de horas a dias~\cite{zhou2025,oonishi2026}. Contra o AES, onde o melhor ataque clássico continua a ser a pesquisa exaustiva, de complexidade $\mathcal{O}(2^{n})$, o ataque quântico apenas reduz o expoente para metade, $\mathcal{O}(2^{n/2})$, e mantém a classe exponencial, continuando a exigir a execução integral do oráculo em cada iteração.~\cite{huang2022,liu2023,chethana2025}.
+
+Em termos práticos, as limitações identificadas (Secção~\ref{sec:limitacoes}) conduzem a uma conclusão diferente para cada cifra. A ameaça ao RSA é real: a literatura não identifica obstáculos fundamentais, apenas desafios de engenharia, e as estimativas de recursos continuam a diminuir, pelo que a migração para algoritmos pós-quânticos, num processo que o NIST já conduz, é a resposta indicada~\cite{chethana2025}. A ameaça ao AES é mitigável com chaves de 256 bits, mas exige vigilância quanto a ataques estruturais e aos modos de operação, porque duplicar o comprimento da chave, por si só, não resolve o problema~\cite{chethana2025}.
+
+Na Parte~2 do projeto, a implementação prática dará dimensão empírica a estas conclusões: (i)~implementação do ataque de Grover sobre o S-AES em Qiskit, cujo circuito de 48 qubits~\cite{wang2022} é simulável por completo, com medição de qubits, portas e profundidade; (ii)~implementação do algoritmo de Shor para inteiros pequenos com avaliação dos recursos em função do tamanho de $N$; e (iii)~comparação de desempenho entre simuladores (Qiskit Aer) e, quando possível, hardware da plataforma IBM Quantum. Todos os resultados serão documentados no repositório online do grupo: \url{https://github.com/srsi-iscte-26/SRSI-Classic-vs-Quantum-Algorithms}.
+
+% ------------------------------------------------------------
+% REFERENCIAS
+% ------------------------------------------------------------
+\newpage
+\phantomsection
+\addcontentsline{toc}{section}{Referências}
+\begin{thebibliography}{9}
+
+\bibitem{zhou2025}
+H.~Zhou, C.~Duckering, C.~Zhao, D.~Bluvstein, M.~Cain, A.~Kubica, S.-T. Wang, and M.~D. Lukin, ``Resource analysis of Low-Overhead Transversal Architectures for Reconfigurable Atom Arrays,'' in \emph{Proc.\ 52nd Annual International Symposium on Computer Architecture (ISCA '25)}, Tokyo, Japan, 2025, doi: 10.1145/3695053.3731039.
+
+\bibitem{luongo2025}
+A.~Luongo, V.~Narasimhachar, and A.~Sireesh, ``Optimizing Windowed Arithmetic for Quantum Attacks Against RSA-2048,'' in \emph{Proc.\ 62nd ACM/IEEE Design Automation Conference (DAC)}, 2025, doi: 10.1109/DAC63849.2025.11132436.
+
+\bibitem{oonishi2026}
+K.~Oonishi and N.~Kunihiro, ``An Evaluation of Computational Complexity of Shor's Algorithm on Surface Codes for Factorization,'' \emph{IEEE Access}, vol.~14, 2026, doi: 10.1109/ACCESS.2026.3665887.
+
+\bibitem{huang2022}
+Z.~Huang and S.~Sun, ``Synthesizing Quantum Circuits of AES with Lower T-depth and Less Qubits,'' in \emph{Advances in Cryptology~--- ASIACRYPT 2022}, Lecture Notes in Computer Science, vol.~13793, Berlin, Germany: Springer, 2022, pp.~614--644, doi: 10.1007/978-3-031-22969-5\_21.
+
+\bibitem{liu2023}
+Q.~Liu, B.~Preneel, Z.~Zhao, and M.~Wang, ``Improved Quantum Circuits for AES: Reducing the Depth and the Number of Qubits,'' in \emph{Advances in Cryptology~--- ASIACRYPT 2023}, Lecture Notes in Computer Science, vol.~14440, Berlin, Germany: Springer, 2023, pp.~67--98, doi: 10.1007/978-981-99-8727-6\_3.
+
+\bibitem{wang2022}
+Z.-G.~Wang, S.-J. Wei, and G.-L. Long, ``A Quantum Circuit Design of AES Requiring Fewer Quantum Qubits and Gate Operations,'' \emph{Frontiers of Physics}, vol.~17, no.~4, art.~41501, 2022, doi: 10.1007/s11467-021-1141-2.
+
+\bibitem{chethana2025}
+R.~V. Chethana, J.~Vrindavanam, S.~Roy, and P.~C. Deshmukh, ``A Review of Block Ciphers and Its Post-Quantum Considerations,'' \emph{IEEE Access}, vol.~13, 2025, doi: 10.1109/ACCESS.2025.3554602.
+
+\end{thebibliography}
+
+\end{document}
