@@ -1,0 +1,17 @@
+estado_binario,estado_decimal,chave_candidata,contagem,chave_correta
+0000,0,0x4AF0,0,False
+0001,1,0x4AF1,2,False
+0010,2,0x4AF2,3,False
+0011,3,0x4AF3,1,False
+0100,4,0x4AF4,1,False
+0101,5,0x4AF5,497,True
+0110,6,0x4AF6,1,False
+0111,7,0x4AF7,0,False
+1000,8,0x4AF8,0,False
+1001,9,0x4AF9,1,False
+1010,10,0x4AFA,1,False
+1011,11,0x4AFB,1,False
+1100,12,0x4AFC,2,False
+1101,13,0x4AFD,1,False
+1110,14,0x4AFE,0,False
+1111,15,0x4AFF,1,False

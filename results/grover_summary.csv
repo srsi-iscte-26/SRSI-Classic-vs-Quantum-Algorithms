@@ -1,4 +1,0 @@
-bits_variaveis,espaco_pesquisa,chaves_validas,bits_fixos,tentativas_classicas,iteracoes_otimas,probabilidade_teorica,probabilidade_experimental,medicoes,qubits,profundidade,operacoes
-4,16,1,4AF0,16,3,0.9613189697265625,0.95654296875,2048,4,14,38
-8,256,1,4A00,256,12,0.9999470421032736,1.0,2048,8,50,232
-12,4096,1,4000,4096,50,0.9999453461091142,1.0,2048,12,202,1324

@@ -1,221 +1,260 @@
-import os
 import csv
-import math
+import os
 import matplotlib.pyplot as plt
-
+import math
 from qiskit import transpile
 from qiskit_aer import AerSimulator
 from src.classical.saes import encrypt
-from src.classical.brute_force import brute_force_search
-from src.grover.grover_saes import build_grover_circuit
+from src.grover.grover_saes import (build_s_aes_encryption_test_circuit, build_grover_circuit)
+
+# -----------------
+# Configuração
+# -----------------
 
 PLAINTEXT = 0xD728
 SECRET_KEY = 0x4AF5
-SEARCH_SIZES = (4, 8, 12)
-SHOTS = 2048
+N_BITS = 4
+SHOTS = 512
 SEED = 42
+
+FILE_PREFIX = f"grover_reversivel_{N_BITS}_bits"
+
+# --------------------------------------------------
+# PREPARAÇÃO DOS DADOS
+# --------------------------------------------------
+
+CIPHERTEXT = encrypt(PLAINTEXT, SECRET_KEY)
+VARIABLE_MASK = (1 << N_BITS) - 1
+FIXED_KEY_BITS = SECRET_KEY & (0xFFFF ^ VARIABLE_MASK)
+EXPECTED_STATE = SECRET_KEY & VARIABLE_MASK
+
+N_VALID_KEYS = 1
+N_STATES = 1 << N_BITS
+
+THETA = math.asin(math.sqrt(N_VALID_KEYS / N_STATES))
+OPTIMAL_ITERATIONS = round(math.pi / (4 * THETA) - 0.5)
+THEORETICAL_PROBABILITY = math.sin((2 * OPTIMAL_ITERATIONS + 1) * THETA) ** 2
+
+
+print("=" * 50)
+print("CONFIGURAÇÃO DA EXPERIÊNCIA")
+print("=" * 50)
+
+print(f"Texto original: {PLAINTEXT:04X}")
+print(f"Texto cifrado: {CIPHERTEXT:04X}")
+print(f"Bits variáveis: {N_BITS}")
+print(f"Bits fixos: {FIXED_KEY_BITS:04X}")
+print(f"Espaço de pesquisa: {N_STATES}")
+print(f"Iterações de Grover: {OPTIMAL_ITERATIONS}")
+
+# -----------
+# SIMULADOR
+# ------------
+
+simulator = AerSimulator(method="matrix_product_state")
+
+# ---------------------------------------
+# Validação da encriptação S-AES Quântica
+# ---------------------------------------
+
+print("\n" + "=" * 50)
+print("Validação da encriptação S-AES Quântica")
+print("=" * 50)
+
+test_circuit = build_s_aes_encryption_test_circuit(PLAINTEXT, SECRET_KEY)
+
+compiled_test = transpile(test_circuit, simulator, optimization_level=1, seed_transpiler=SEED)
+test_result = simulator.run(compiled_test, shots=1, seed_simulator=SEED).result()
+test_counts = test_result.get_counts(compiled_test)
+measured_state = int(next(iter(test_counts)).replace(" ", ""), 2)
+
+print(f"Ciphertext clássico: {CIPHERTEXT:04X}")
+print(f"Ciphertext quântico: {measured_state:04X}")
+
+if measured_state != CIPHERTEXT:
+    raise RuntimeError("A encriptação S-AES quântica não corresponde à versão clássica.")
+
+print("Encriptação S-AES quântica validada!")
+
+# ---------------------------------
+# Construção do circuito de grover
+# ---------------------------------
+
+print("\n" + "=" * 50)
+print("CONSTRUÇÃO DO CIRCUITO DE GROVER")
+print("=" * 50)
+
+circuit = build_grover_circuit(n_bits=N_BITS, plaintext=PLAINTEXT, ciphertext=CIPHERTEXT, fixed_key_bits=FIXED_KEY_BITS, iterations=OPTIMAL_ITERATIONS)
+
+print(f"Qubits totais: {circuit.num_qubits}")
+print(f"Qubits de pesquisa: {N_BITS}")
+
+# --------------------------------------------------
+# TRANSPILAÇÃO E EXECUÇÃO
+# --------------------------------------------------
+
+compiled_circuit = transpile(circuit, simulator, optimization_level=1, seed_transpiler=SEED)
+
+print("\nA executar o circuito no simulador Aer...")
+
+result = simulator.run(compiled_circuit, shots=SHOTS, seed_simulator=SEED).result()
+counts = result.get_counts(compiled_circuit)
+
+# ----------------------
+# Análise das Medições
+# ----------------------
+
+successful_shots = 0
+
+print("\n" + "=" * 50)
+print("Resultados das Medições:")
+print("=" * 50)
+
+for bitstring, count in sorted(counts.items(), key=lambda item: int(item[0].replace(" ", ""), 2)):
+    state = int(bitstring.replace(" ", ""), 2)
+    print(f"{bitstring}: {count}")
+    if state == EXPECTED_STATE:
+        successful_shots += count
+
+EXPERIMENTAL_PROBABILITY = successful_shots / SHOTS
+
+# ------------------
+# Resultados Finais
+# -------------------
+
+print("\n" + "=" * 50)
+print("Resultados Finais")
+print("=" * 50)
+
+print(f"Estado esperado: {EXPECTED_STATE:0{N_BITS}b}")
+print(f"Iterações de Grover: {OPTIMAL_ITERATIONS}")
+print(f"Medições: {SHOTS}")
+print(f"Medições bem-sucedidas: {successful_shots}")
+
+print(f"Probabilidade experimental: "f"{EXPERIMENTAL_PROBABILITY:.4f}")
+
+print(f"Probabilidade teórica: "f"{THEORETICAL_PROBABILITY:.4f}")
+
+# ----------------------
+# Métricas do circuito
+# ----------------------
+
+print("\n" + "=" * 50)
+print("Métricas do circuito")
+print("=" * 50)
+
+print(f"Qubits totais: {compiled_circuit.num_qubits}")
+print(f"Qubits de pesquisa: {N_BITS}")
+print(f"Profundidade: {compiled_circuit.depth()}")
+print(f"Número de operações: {compiled_circuit.size()}")
+print(f"Operações por tipo: {compiled_circuit.count_ops()}")
+
+
+# --------------------------------------------------
+# GUARDAR OS RESULTADOS
+# --------------------------------------------------
 
 os.makedirs("results", exist_ok=True)
 os.makedirs("plots", exist_ok=True)
 
+# Organizar as contagens das medições
+counts_by_state = {
+    int(bitstring.replace(" ", ""), 2): count
+    for bitstring, count in counts.items()
+}
 
-simulator = AerSimulator()
-measurement_results = []
-summary_results = []
+# Guardar a distribuição dos 16 estados possíveis
+with open(
+    "results/grover_reversivel_4_bits_counts.csv",
+    "w",
+    newline="",
+    encoding="utf-8"
+) as file:
 
-# -------------------------
-# Execução das experiências
-# -------------------------
+    writer = csv.DictWriter(
+        file,
+        fieldnames=[
+            "estado_binario",
+            "estado_decimal",
+            "chave_candidata",
+            "contagem",
+            "chave_correta"
+        ]
+    )
 
-CIPHERTEXT = encrypt(PLAINTEXT, SECRET_KEY)
+    writer.writeheader()
 
-print(f"Texto original: {PLAINTEXT:04X}")
-print(f"Texto cifrado:  {CIPHERTEXT:04X}")
+    for state in range(N_STATES):
 
-
-for n_bits in SEARCH_SIZES:
-    print("\n" + "=" * 45)
-    print(f"ESPAÇO DE PESQUISA: {n_bits} BITS")
-    print("=" * 45)
-
-    # Determinar os bits fixos e variáveis da chave
-    variable_mask = (1 << n_bits) - 1
-    fixed_key_bits = SECRET_KEY & (0xFFFF ^ variable_mask)
-
-    # Executar a pesquisa clássica
-    matches, classical_attempts = brute_force_search(plaintext=PLAINTEXT, ciphertext=CIPHERTEXT, n_bits=n_bits, fixed_key_bits=fixed_key_bits)
-
-    # Converter as chaves válidas nos estados dos qubits
-    marked_states = [key & variable_mask for key in matches]
-
-    if not marked_states:
-        raise RuntimeError("Não foi encontrada nenhuma chave válida.")
-
-    # Calcular o número ótimo de iterações
-    N = 2 ** n_bits
-    M = len(marked_states)
-
-    theta = math.asin(math.sqrt(M / N))
-    optimal_iterations = round(math.pi / (4 * theta) - 0.5)
-    theoretical_probability = math.sin((2 * optimal_iterations + 1) * theta) ** 2
-
-    # Selecionar algumas iterações para testar
-    iterations_to_test = sorted(set([
-        0,
-        1,
-        max(0, optimal_iterations // 2),
-        max(0, optimal_iterations - 1),
-        optimal_iterations,
-        optimal_iterations + 1
-    ]))
-
-    circuits = [build_grover_circuit(n_bits=n_bits, marked_states=marked_states, iterations=iteration) for iteration in iterations_to_test]
-
-    # Preparar os circuitos para o simulador
-    compiled_circuits = transpile(circuits, simulator, seed_transpiler=SEED)
-
-    # Executar as experiências
-    result = simulator.run(compiled_circuits, shots=SHOTS, seed_simulator=SEED).result()
-
-    # Recolher os resultados das medições
-    experimental_probabilities = {}
-    for index, iteration in enumerate(iterations_to_test):
-        counts = result.get_counts(index)
-        successful_shots = 0
-        for bitstring, count in counts.items():
-            state = int(bitstring.replace(" ", ""), 2)
-            if state in marked_states:
-                successful_shots += count
-
-        probability = successful_shots / SHOTS
-        experimental_probabilities[iteration] = probability
-
-        theoretical = math.sin((2 * iteration + 1) * theta) ** 2
-
-        measurement_results.append({
-            "bits_variaveis": n_bits,
-            "iteracoes": iteration,
-            "medicoes": SHOTS,
-            "medicoes_bem_sucedidas": successful_shots,
-            "probabilidade_experimental": probability,
-            "probabilidade_teorica": theoretical
+        writer.writerow({
+            "estado_binario": f"{state:04b}",
+            "estado_decimal": state,
+            "chave_candidata": f"0x{FIXED_KEY_BITS | state:04X}",
+            "contagem": counts_by_state.get(state, 0),
+            "chave_correta": state == EXPECTED_STATE
         })
 
-        print(f"Iterações: {iteration:3d} | "f"Experimental: {probability:.4f} | "f"Teórica: {theoretical:.4f}")
 
-    # Recolher métricas do circuito com número ótimo de iterações
-    optimal_index = iterations_to_test.index(optimal_iterations)
-    optimal_circuit = compiled_circuits[optimal_index]
-    optimal_experimental_probability = (experimental_probabilities[optimal_iterations])
+# Guardar o resumo da experiência
+with open("results/grover_reversivel_4_bits_summary.csv", "w", newline="", encoding="utf-8") as file:
+    writer = csv.DictWriter(
+        file,
+        fieldnames=[
+            "plaintext",
+            "ciphertext",
+            "bits_variaveis",
+            "qubits_totais",
+            "iteracoes",
+            "medicoes",
+            "medicoes_bem_sucedidas",
+            "probabilidade_experimental",
+            "probabilidade_teorica",
+            "profundidade",
+            "operacoes"
+        ]
+    )
 
-    summary = {
-        "bits_variaveis": n_bits,
-        "espaco_pesquisa": N,
-        "chaves_validas": M,
-        "bits_fixos": f"{fixed_key_bits:04X}",
-        "tentativas_classicas": classical_attempts,
-        "iteracoes_otimas": optimal_iterations,
-        "probabilidade_teorica": theoretical_probability,
-        "probabilidade_experimental": optimal_experimental_probability,
+    writer.writeheader()
+
+    writer.writerow({
+        "plaintext": f"{PLAINTEXT:04X}",
+        "ciphertext": f"{CIPHERTEXT:04X}",
+        "bits_variaveis": N_BITS,
+        "qubits_totais": compiled_circuit.num_qubits,
+        "iteracoes": OPTIMAL_ITERATIONS,
         "medicoes": SHOTS,
-        "qubits": optimal_circuit.num_qubits,
-        "profundidade": optimal_circuit.depth(),
-        "operacoes": optimal_circuit.size()
-    }
-
-    summary_results.append(summary)
-
-    # -----------------------
-    # Construção do gráfico
-    # -----------------------
-
-    max_iterations = 2 * optimal_iterations
-
-    theoretical_iterations = list(range(max_iterations + 1))
-    theoretical_curve = [math.sin((2 * iteration + 1) * theta) ** 2 for iteration in theoretical_iterations]
-
-    experimental_iterations = list(experimental_probabilities.keys())
-    experimental_curve = [experimental_probabilities[iteration] for iteration in experimental_iterations]
-
-    plt.figure(figsize=(9, 5))
-    plt.plot(theoretical_iterations, theoretical_curve, label="Probabilidade teórica")
-    plt.scatter(experimental_iterations, experimental_curve, label="Probabilidade experimental")
-    plt.axvline(optimal_iterations, linestyle="--", label="Número ótimo de iterações")
-    plt.xlabel("Iterações de Grover")
-    plt.ylabel("Probabilidade de sucesso")
-    plt.title(f"Pesquisa de Grover - {n_bits} bits variáveis")
-    plt.ylim(0, 1.05)
-    plt.legend()
-    plt.grid(True)
-    plt.tight_layout()
-    plt.savefig(f"plots/grover_{n_bits}_bits.png", dpi=150)
-    plt.close()
-
-# -----------------------------
-# Guardar os resultados em csv
-# ------------------------------
-
-with open(
-    "results/grover_measurements.csv",
-    "w",
-    newline="",
-    encoding="utf-8"
-) as file:
-
-    writer = csv.DictWriter(
-        file,
-        fieldnames=measurement_results[0].keys()
-    )
-
-    writer.writeheader()
-    writer.writerows(measurement_results)
+        "medicoes_bem_sucedidas": successful_shots,
+        "probabilidade_experimental": EXPERIMENTAL_PROBABILITY,
+        "probabilidade_teorica": THEORETICAL_PROBABILITY,
+        "profundidade": compiled_circuit.depth(),
+        "operacoes": compiled_circuit.size()
+    })
 
 
-with open(
-    "results/grover_summary.csv",
-    "w",
-    newline="",
-    encoding="utf-8"
-) as file:
+# ---------------
+# Gráfico
+# ----------------
 
-    writer = csv.DictWriter(
-        file,
-        fieldnames=summary_results[0].keys()
-    )
+# Calcular a curva teórica para diferentes iterações
+iterations_plot = range(9)
+theoretical_curve = [math.sin((2 * iteration + 1) * THETA) ** 2 for iteration in iterations_plot]
 
-    writer.writeheader()
-    writer.writerows(summary_results)
+plt.figure(figsize=(9, 5))
+plt.plot(list(iterations_plot), theoretical_curve, label="Probabilidade teórica")
+plt.scatter([OPTIMAL_ITERATIONS], [EXPERIMENTAL_PROBABILITY], label="Probabilidade experimental", zorder=3)
+plt.axvline(OPTIMAL_ITERATIONS, linestyle="--", label="Iterações ótimas")
+plt.xlabel("Iterações de Grover")
+plt.ylabel("Probabilidade de sucesso")
+plt.title("Grover com oráculo reversível S-AES - 4 bits")
+plt.ylim(0, 1.05)
+plt.xticks(list(iterations_plot))
+plt.grid(True)
+plt.legend()
+plt.tight_layout()
+plt.savefig("plots/grover_reversivel_4_bits.png", dpi=150)
+plt.close()
 
-
-# -----------------------------
-# Resumo
-# -----------------------------
-
-print("\n" + "=" * 55)
-print("RESUMO FINAL DAS EXPERIÊNCIAS DE GROVER")
-print("=" * 55)
-
-for item in summary_results:
-
-    print(f"\nBits variáveis: {item['bits_variaveis']}")
-    print(f"Tentativas clássicas: {item['tentativas_classicas']}")
-    print(f"Iterações ótimas: {item['iteracoes_otimas']}")
-
-    print(
-        f"Probabilidade teórica: "
-        f"{item['probabilidade_teorica']:.4f}"
-    )
-
-    print(
-        f"Probabilidade experimental: "
-        f"{item['probabilidade_experimental']:.4f}"
-    )
-
-    print(f"Qubits: {item['qubits']}")
-    print(f"Profundidade: {item['profundidade']}")
-    print(f"Número de operações: {item['operacoes']}")
-
-print("\nResultados guardados em:")
-print("  results/grover_measurements.csv")
-print("  results/grover_summary.csv")
-print("  plots/")
+print("\nResultados guardados:")
+print("  results/grover_reversivel_4_bits_counts.csv")
+print("  results/grover_reversivel_4_bits_summary.csv")
+print("  plots/grover_reversivel_4_bits.png")

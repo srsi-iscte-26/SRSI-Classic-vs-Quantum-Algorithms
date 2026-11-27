@@ -1,0 +1,2 @@
+plaintext,ciphertext,bits_variaveis,qubits_totais,iteracoes,medicoes,medicoes_bem_sucedidas,probabilidade_experimental,probabilidade_teorica,profundidade,operacoes
+D728,24EC,4,36,3,512,497,0.970703125,0.9613189697265625,704,3735

@@ -113,29 +113,29 @@ def build_order_finding_circuit(modulus, base, n_counting_qubits=8):
     return circuit
 
 
-# Recupera o período através de frações contínuas
-def recover_order(measured_value, n_counting_qubits, base, modulus):
 
+# Recupera o menor período através de frações contínuas
+def recover_order(measured_value, n_counting_qubits, base, modulus):
     if measured_value == 0:
         return None
 
     # Aproximar a fase medida utilizando frações contínuas
-    phase = Fraction(
-        measured_value,
-        1 << n_counting_qubits
-    ).limit_denominator(modulus)
-
-    # Testar múltiplos do denominador até encontrar o período
+    phase = Fraction(measured_value, 1 << n_counting_qubits).limit_denominator(modulus)
     denominator = phase.denominator
-
-    if phase.numerator == 0:
+    if phase.numerator == 0 or denominator == 1:
         return None
 
+    # Procurar múltiplos do denominador que satisfaçam a condição modular
     for candidate in range(denominator, modulus + 1, denominator):
-
         if pow(base, candidate, modulus) == 1:
-            return candidate
+            # Encontrar o menor período que satisfaz a condição
+            for order in range(1, candidate + 1):
+                if (candidate % order == 0 and pow(base, order, modulus) == 1):
+                    # Confirmar que o denominador divide o período encontrado
+                    if order % denominator == 0:
+                        return order
 
+                    return None
     return None
 
 
